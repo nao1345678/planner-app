@@ -51,6 +51,22 @@ model RoutineTemplate {
   weekday  Int? // null = tous les jours, 0 = dimanche
 }
 
+// Catalogue de tâches possibles (le « répertoire »). On pioche dedans pour
+// remplir une journée ; rien n'y est ajouté automatiquement aux jours.
+model LibraryTask {
+  id        String        @id @default(cuid())
+  label     String
+  section   Section
+  group     String // ex. « Meal prep », « Session recherche d'emploi 1 h »
+  priority  Priority      @default(YELLOW)
+  order     Int           @default(0)
+  parent    LibraryTask?  @relation("LibrarySubtasks", fields: [parentId], references: [id], onDelete: Cascade)
+  parentId  String?
+  children  LibraryTask[] @relation("LibrarySubtasks")
+
+  @@index([section, group])
+}
+
 model WeekReview {
   id        String   @id @default(cuid())
   weekStart DateTime @unique

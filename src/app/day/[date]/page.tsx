@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import TaskSection from "@/components/TaskSection";
+import { getLibraryGroups } from "@/lib/library";
 import { getOrCreateDay } from "@/lib/days";
 import { addDays, formatLong, isValidISO, todayISO } from "@/lib/dates";
 import { SECTIONS, SECTION_META } from "@/lib/constants";
@@ -24,89 +25,85 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
     (s) => SECTION_META[s].alwaysVisible || tasks.some((t) => t.section === s),
   );
 
+  const libraries = await Promise.all(visibleSections.map((s) => getLibraryGroups(s)));
+
+  const field = "rounded-full border border-ink/60 bg-transparent px-3 py-1 text-xs outline-none focus:border-ink";
+  const pill = "rounded-full border border-ink/60 px-3 py-1 text-xs uppercase hover:bg-ink hover:text-paper";
+
   return (
-    <main className="mx-auto max-w-3xl space-y-6 px-4 py-8">
+    <main className="mx-auto max-w-4xl space-y-8 px-4 py-10 sm:px-8 md:px-16">
       <header className="space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <Link href={`/day/${addDays(date, -1)}`} className="rounded-lg px-3 py-1 hover:bg-stone-200">
-            ← Veille
+        <div className="space-y-1">
+          <p className="text-[10px] italic">Coucou, voici notre to-do du</p>
+          <h1 className="font-display text-3xl font-black first-letter:capitalize">{formatLong(date)}</h1>
+        </div>
+        <div className="flex flex-wrap items-center gap-x-8 gap-y-2 text-xs uppercase">
+          <Link href={`/day/${addDays(date, -1)}`} className="hover:underline">
+            ⟵ Veille
           </Link>
-          <div className="text-center">
-            <h1 className="text-2xl font-bold capitalize text-stone-900">{formatLong(date)}</h1>
-            {date !== today && (
-              <Link href={`/day/${today}`} className="text-sm text-stone-500 underline">
-                Revenir à aujourd&apos;hui
-              </Link>
-            )}
-          </div>
-          <Link href={`/day/${addDays(date, 1)}`} className="rounded-lg px-3 py-1 hover:bg-stone-200">
-            Lendemain →
+          <Link href={`/day/${addDays(date, 1)}`} className="hover:underline">
+            Lendemain ⟶
           </Link>
+          {date !== today && (
+            <Link href={`/day/${today}`} className="normal-case underline">
+              Revenir à aujourd&apos;hui
+            </Link>
+          )}
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <form action={goToDate} className="flex gap-2">
-            <input
-              type="date"
-              name="date"
-              defaultValue={date}
-              className="rounded-lg border border-stone-200 bg-white px-2 py-1 text-sm"
-            />
-            <button type="submit" className="rounded-lg border border-stone-300 px-3 text-sm hover:bg-stone-100">
+            <input type="date" name="date" defaultValue={date} className={field} />
+            <button type="submit" className={pill}>
               Aller
             </button>
           </form>
 
           <form action={toggleHardDay.bind(null, date)}>
-            <button
-              type="submit"
-              className={`rounded-lg px-3 py-1 text-sm ${
-                day.hardDay ? "bg-rose-100 text-rose-700" : "border border-stone-300 hover:bg-stone-100"
-              }`}
-            >
-              {day.hardDay ? "Mode journée difficile : activé" : "Mode journée difficile"}
+            <button type="submit" className={`${pill} ${day.hardDay ? "bg-ink text-paper" : ""}`}>
+              {day.hardDay ? "Journée difficile : activée" : "Journée difficile"}
             </button>
           </form>
         </div>
 
-        <div>
-          <div className="mb-1 flex justify-between text-sm text-stone-500">
+        <div className="max-w-md">
+          <div className="mb-1 flex justify-between text-xs">
             <span>
               {done} / {tasks.length} tâches
             </span>
             <span>{percent} %</span>
           </div>
-          <div className="h-2 overflow-hidden rounded-full bg-stone-200">
-            <div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: `${percent}%` }} />
+          <div className="h-1 overflow-hidden rounded-full border border-ink/60">
+            <div className="h-full bg-ink transition-all" style={{ width: `${percent}%` }} />
           </div>
         </div>
 
         {day.hardDay && (
-          <p className="rounded-xl bg-rose-50 p-3 text-sm text-rose-700">
+          <p className="max-w-xl text-sm italic">
             Aujourd&apos;hui, on ne rattrape rien. Le minimum suffit — le lendemain n&apos;est pas une journée de
             rattrapage.
           </p>
         )}
       </header>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        {visibleSections.map((s) => (
-          <TaskSection key={s} date={date} section={s} tasks={tasks.filter((t) => t.section === s)} />
+      <div className="grid gap-x-6 gap-y-10 md:grid-cols-2">
+        {visibleSections.map((s, i) => (
+          <TaskSection key={s} date={date} section={s} tasks={tasks.filter((t) => t.section === s)} library={libraries[i]} />
         ))}
       </div>
 
-      <section className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
-        <h2 className="mb-3 font-semibold text-stone-800">📓 Journal</h2>
-        <form action={saveJournal.bind(null, date)} className="space-y-2">
+      <section className="rounded-[40px] border border-ink/60 px-7 py-6">
+        <h2 className="mb-3 font-display text-sm font-black uppercase">Journal</h2>
+        <form action={saveJournal.bind(null, date)} className="space-y-3">
           <textarea
             key={day.journal ?? ""}
             name="journal"
             defaultValue={day.journal ?? ""}
             rows={5}
             placeholder="Comment s'est passée la journée ?"
-            className="w-full rounded-lg border border-stone-200 p-2 text-sm outline-none focus:border-stone-400"
+            className="w-full rounded-2xl border border-ink/40 bg-transparent p-3 text-sm outline-none focus:border-ink"
           />
-          <button type="submit" className="rounded-lg bg-stone-800 px-4 py-1 text-sm text-white hover:bg-stone-700">
+          <button type="submit" className={pill}>
             Enregistrer
           </button>
         </form>

@@ -11,5 +11,6 @@
 export type * from './models/Day'
 export type * from './models/Task'
 export type * from './models/RoutineTemplate'
+export type * from './models/LibraryTask'
 export type * from './models/WeekReview'
 export type * from './commonInputTypes'

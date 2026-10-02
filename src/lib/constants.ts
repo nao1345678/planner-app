@@ -12,12 +12,12 @@ export const PRIORITY_META: Record<PriorityKey, { dot: string; label: string }> 
 };
 
 export const SECTION_META: Record<SectionKey, { title: string; alwaysVisible: boolean }> = {
-  MORNING: { title: "🌅 Matin", alwaysVisible: true },
-  RESET: { title: "🧹 Reset", alwaysVisible: false },
-  TODO: { title: "📋 À faire — dans l'ordre", alwaysVisible: true },
-  EVENING: { title: "🌙 Soir", alwaysVisible: true },
-  CREATION: { title: "🎨 Création", alwaysVisible: true },
-  COUPLE: { title: "💞 Soirée couple", alwaysVisible: false },
+  MORNING: { title: "Matin", alwaysVisible: true },
+  RESET: { title: "Reset", alwaysVisible: false },
+  TODO: { title: "À faire", alwaysVisible: true },
+  EVENING: { title: "Soir", alwaysVisible: true },
+  CREATION: { title: "Création", alwaysVisible: true },
+  COUPLE: { title: "Soirée couple", alwaysVisible: false },
 };
 
 export function priorityRank(p: string): number {

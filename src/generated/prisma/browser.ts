@@ -33,6 +33,11 @@ export type Task = Prisma.TaskModel
  */
 export type RoutineTemplate = Prisma.RoutineTemplateModel
 /**
+ * Model LibraryTask
+ * 
+ */
+export type LibraryTask = Prisma.LibraryTaskModel
+/**
  * Model WeekReview
  * 
  */

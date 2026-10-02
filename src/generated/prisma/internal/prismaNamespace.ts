@@ -400,6 +400,7 @@ export const ModelName = {
   Day: 'Day',
   Task: 'Task',
   RoutineTemplate: 'RoutineTemplate',
+  LibraryTask: 'LibraryTask',
   WeekReview: 'WeekReview'
 } as const
 
@@ -416,7 +417,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "day" | "task" | "routineTemplate" | "weekReview"
+    modelProps: "day" | "task" | "routineTemplate" | "libraryTask" | "weekReview"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -642,6 +643,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    LibraryTask: {
+      payload: Prisma.$LibraryTaskPayload<ExtArgs>
+      fields: Prisma.LibraryTaskFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LibraryTaskFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryTaskPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LibraryTaskFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryTaskPayload>
+        }
+        findFirst: {
+          args: Prisma.LibraryTaskFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryTaskPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LibraryTaskFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryTaskPayload>
+        }
+        findMany: {
+          args: Prisma.LibraryTaskFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryTaskPayload>[]
+        }
+        create: {
+          args: Prisma.LibraryTaskCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryTaskPayload>
+        }
+        createMany: {
+          args: Prisma.LibraryTaskCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LibraryTaskCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryTaskPayload>[]
+        }
+        delete: {
+          args: Prisma.LibraryTaskDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryTaskPayload>
+        }
+        update: {
+          args: Prisma.LibraryTaskUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryTaskPayload>
+        }
+        deleteMany: {
+          args: Prisma.LibraryTaskDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LibraryTaskUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LibraryTaskUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryTaskPayload>[]
+        }
+        upsert: {
+          args: Prisma.LibraryTaskUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryTaskPayload>
+        }
+        aggregate: {
+          args: Prisma.LibraryTaskAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLibraryTask>
+        }
+        groupBy: {
+          args: Prisma.LibraryTaskGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LibraryTaskGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LibraryTaskCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LibraryTaskCountAggregateOutputType> | number
+        }
+      }
+    }
     WeekReview: {
       payload: Prisma.$WeekReviewPayload<ExtArgs>
       fields: Prisma.WeekReviewFieldRefs
@@ -784,6 +859,19 @@ export const RoutineTemplateScalarFieldEnum = {
 } as const
 
 export type RoutineTemplateScalarFieldEnum = (typeof RoutineTemplateScalarFieldEnum)[keyof typeof RoutineTemplateScalarFieldEnum]
+
+
+export const LibraryTaskScalarFieldEnum = {
+  id: 'id',
+  label: 'label',
+  section: 'section',
+  group: 'group',
+  priority: 'priority',
+  order: 'order',
+  parentId: 'parentId'
+} as const
+
+export type LibraryTaskScalarFieldEnum = (typeof LibraryTaskScalarFieldEnum)[keyof typeof LibraryTaskScalarFieldEnum]
 
 
 export const WeekReviewScalarFieldEnum = {
@@ -1023,6 +1111,7 @@ export type GlobalOmitConfig = {
   day?: Prisma.DayOmit
   task?: Prisma.TaskOmit
   routineTemplate?: Prisma.RoutineTemplateOmit
+  libraryTask?: Prisma.LibraryTaskOmit
   weekReview?: Prisma.WeekReviewOmit
 }
 

@@ -54,6 +54,7 @@ export const ModelName = {
   Day: 'Day',
   Task: 'Task',
   RoutineTemplate: 'RoutineTemplate',
+  LibraryTask: 'LibraryTask',
   WeekReview: 'WeekReview'
 } as const
 
@@ -102,6 +103,19 @@ export const RoutineTemplateScalarFieldEnum = {
 } as const
 
 export type RoutineTemplateScalarFieldEnum = (typeof RoutineTemplateScalarFieldEnum)[keyof typeof RoutineTemplateScalarFieldEnum]
+
+
+export const LibraryTaskScalarFieldEnum = {
+  id: 'id',
+  label: 'label',
+  section: 'section',
+  group: 'group',
+  priority: 'priority',
+  order: 'order',
+  parentId: 'parentId'
+} as const
+
+export type LibraryTaskScalarFieldEnum = (typeof LibraryTaskScalarFieldEnum)[keyof typeof LibraryTaskScalarFieldEnum]
 
 
 export const WeekReviewScalarFieldEnum = {

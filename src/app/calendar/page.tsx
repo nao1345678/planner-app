@@ -19,11 +19,11 @@ function monthKey(year: number, month: number) {
 }
 
 function cellColor(percent: number | null) {
-  if (percent === null) return "bg-white";
-  if (percent >= 80) return "bg-emerald-200";
-  if (percent >= 50) return "bg-emerald-100";
-  if (percent > 0) return "bg-amber-50";
-  return "bg-stone-100";
+  if (percent === null) return "bg-transparent";
+  if (percent >= 80) return "bg-ink/30";
+  if (percent >= 50) return "bg-ink/20";
+  if (percent > 0) return "bg-ink/10";
+  return "bg-ink/5";
 }
 
 export default async function CalendarPage({
@@ -65,18 +65,18 @@ export default async function CalendarPage({
   ];
 
   return (
-    <main className="mx-auto max-w-3xl space-y-6 px-4 py-8">
+    <main className="mx-auto max-w-4xl space-y-6 px-4 py-10 sm:px-8 md:px-16">
       <header className="flex items-center justify-between">
-        <Link href={`/calendar?month=${monthKey(year, month - 1)}`} className="rounded-lg px-3 py-1 hover:bg-stone-200">
+        <Link href={`/calendar?month=${monthKey(year, month - 1)}`} className="rounded-full border border-ink/60 px-3 py-1 hover:bg-ink hover:text-paper">
           ←
         </Link>
-        <h1 className="text-2xl font-bold capitalize text-stone-900">{formatMonth(year, month)}</h1>
-        <Link href={`/calendar?month=${monthKey(year, month + 1)}`} className="rounded-lg px-3 py-1 hover:bg-stone-200">
+        <h1 className="font-display text-3xl font-black capitalize">{formatMonth(year, month)}</h1>
+        <Link href={`/calendar?month=${monthKey(year, month + 1)}`} className="rounded-full border border-ink/60 px-3 py-1 hover:bg-ink hover:text-paper">
           →
         </Link>
       </header>
 
-      <div className="grid grid-cols-7 gap-2 text-center text-xs font-medium text-stone-500">
+      <div className="grid grid-cols-7 gap-2 text-center text-[10px] font-bold uppercase">
         {WEEKDAYS.map((w) => (
           <div key={w}>{w}</div>
         ))}
@@ -90,12 +90,12 @@ export default async function CalendarPage({
             <Link
               key={iso}
               href={`/day/${iso}`}
-              className={`flex aspect-square flex-col justify-between rounded-xl border p-2 text-left hover:border-stone-400 ${cellColor(
+              className={`flex aspect-square flex-col justify-between rounded-2xl border p-2 text-left hover:border-ink ${cellColor(
                 s?.percent ?? null,
-              )} ${iso === today ? "border-stone-800" : "border-stone-200"}`}
+              )} ${iso === today ? "border-ink border-2" : "border-ink/40"}`}
             >
-              <span className="text-sm font-semibold text-stone-800">{Number(iso.slice(8))}</span>
-              <span className="text-xs text-stone-600">
+              <span className="font-display text-sm font-black">{Number(iso.slice(8))}</span>
+              <span className="text-[10px]">
                 {s?.percent != null ? `${s.percent} %` : ""}
                 {s?.journal ? " ✎" : ""}
                 {s?.hardDay ? " ♡" : ""}
@@ -105,7 +105,7 @@ export default async function CalendarPage({
         })}
       </div>
 
-      <p className="text-xs text-stone-500">✎ journal écrit · ♡ journée difficile · couleur = taux de complétion</p>
+      <p className="text-[10px] italic">✎ journal écrit · ♡ journée difficile · couleur = taux de complétion</p>
     </main>
   );
 }

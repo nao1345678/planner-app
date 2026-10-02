@@ -43,6 +43,52 @@ export async function addTask(date: string, formData: FormData) {
   refresh(date);
 }
 
+/**
+ * Ajoute au jour des tâches du répertoire : soit des tâches précises (`ids`),
+ * soit tout un groupe de la section (`group`, tâches de premier niveau).
+ * Les tâches déjà présentes dans la section (même libellé) sont ignorées pour
+ * ne pas surcharger la journée si on clique deux fois.
+ */
+export async function addFromLibrary(
+  date: string,
+  section: string,
+  input: { ids?: string[]; group?: string },
+): Promise<{ added: number; skipped: number }> {
+  if (!isValidISO(date) || !isSection(section)) return { added: 0, skipped: 0 };
+
+  const rows = input.group
+    ? await prisma.libraryTask.findMany({
+        where: { section, group: input.group, parentId: null },
+        include: { parent: true },
+        orderBy: [{ order: "asc" }, { id: "asc" }],
+      })
+    : await prisma.libraryTask.findMany({
+        where: { section, id: { in: input.ids ?? [] } },
+        include: { parent: true },
+        orderBy: [{ order: "asc" }, { id: "asc" }],
+      });
+
+  const candidates = rows.map((r) => ({
+    label: r.parent ? `${r.parent.label} › ${r.label}` : r.label,
+    priority: r.priority,
+  }));
+  if (candidates.length === 0) return { added: 0, skipped: 0 };
+
+  const day = await getOrCreateDay(date);
+  const present = new Set(day.tasks.filter((t) => t.section === section).map((t) => t.label));
+  const toAdd = candidates.filter((c) => !present.has(c.label));
+
+  if (toAdd.length > 0) {
+    const { _max } = await prisma.task.aggregate({ where: { dayId: day.id }, _max: { order: true } });
+    const start = (_max.order ?? 0) + 1;
+    await prisma.task.createMany({
+      data: toAdd.map((c, i) => ({ ...c, section, order: start + i, dayId: day.id })),
+    });
+    refresh(date);
+  }
+  return { added: toAdd.length, skipped: candidates.length - toAdd.length };
+}
+
 export async function saveJournal(date: string, formData: FormData) {
   if (!isValidISO(date)) return;
   const journal = String(formData.get("journal") ?? "");
