@@ -4,7 +4,7 @@ Application web de mon planner papier A5 : une to-do list quotidienne, un calend
 
 ## Fonctionnalités
 
-- **Vue Jour** : sections Matin / À faire / Soir / Création (+ Reset le dimanche, Soirée couple le mercredi), priorités 🔴 obligatoire · 🟡 recommandé · 🟢 bonus · 🔵 projet.
+- **Vue Jour** : sections Matin / À faire / Soir / Création (+ Reset le dimanche)
 - **Routines automatiques** : chaque nouveau jour est pré-rempli à partir de modèles selon le jour de la semaine.
 - **Mode journée difficile** : n'affiche que le minimum 🔴.
 - **Journal** quotidien.
