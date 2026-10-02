@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// 🔴 🟡 🟢 🔵
+enum Priority {
+  RED
+  YELLOW
+  GREEN
+  BLUE
+}
+
+enum Section {
+  MORNING
+  TODO
+  EVENING
+  CREATION
+  COUPLE
+  RESET
+}
+
+model Day {
+  id      String   @id @default(cuid())
+  date    DateTime @unique // un enregistrement par jour
+  hardDay Boolean  @default(false) // mode journée difficile
+  journal String?
+  tasks   Task[]
+}
+
+model Task {
+  id       String   @id @default(cuid())
+  label    String
+  priority Priority
+  section  Section
+  order    Int      @default(0)
+  done     Boolean  @default(false)
+  day      Day      @relation(fields: [dayId], references: [id], onDelete: Cascade)
+  dayId    String
+}
+
+model RoutineTemplate {
+  id       String   @id @default(cuid())
+  label    String
+  priority Priority
+  section  Section
+  weekday  Int? // null = tous les jours, 0 = dimanche
+}
+
+model WeekReview {
+  id        String   @id @default(cuid())
+  weekStart DateTime @unique
+  done      String?
+  remaining String?
+  helped    String?
+  tooHeavy  String?
+  nextWeek  String?
+}
